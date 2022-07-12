@@ -14,7 +14,7 @@ all: awtp
 #	@$(CC) $(INCL_DIRS) -g -c $(CFLAGS) $< -o $@
 	mipsel-openwrt-linux-musl-gcc $(INCL_DIRS) -g -c $(CFLAGS) $< -o $@
 
-#awtp: $(OBJS)
+awtp: $(OBJS)
 #	echo "  $(CC) $(LDFLAGS) $(LIBS) $(EXENAME)"
 #	$(CC) $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
 	echo "  mipsel-openwrt-linux-musl-gcc $(LDFLAGS) $(LIBS) $(EXENAME)"
