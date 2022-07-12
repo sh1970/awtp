@@ -85,6 +85,8 @@ int main (int argc, char **argv)
 	struct timeval tv;
 	int ret = 0;
 
+	daemon(0, 0);
+
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd == -1) {
 		printf("Can't create socket for: %s", strerror(errno));
