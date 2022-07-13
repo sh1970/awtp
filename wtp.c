@@ -87,7 +87,7 @@ int main (int argc, char **argv)
 	int sockfd;
 	int opt;
 	char ip[16];
-	char recvbuff[2048];
+	char recvbuff[512];
 	struct timeval tv;
 	int ret = 0;
 
@@ -107,7 +107,7 @@ int main (int argc, char **argv)
 		return -2;
 	}
 
-	tv.tv_sec = 5;
+	tv.tv_sec = 10;
 	tv.tv_usec = 0;
 	if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
 		printf("can't set socket timeout.");
@@ -137,7 +137,7 @@ int main (int argc, char **argv)
 	       	} else {         
 			memset((void *)recvbuff, 0, sizeof(recvbuff));
 			ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
-			printf("recv ret= %d.\n", ret);
+			printf("recv ret= %d. errorno = %d, error=%s\n", ret, errno, strerror(errno));
 			fflush(stdout);
 			if ( ret >= 0 ) {
 				printf("recv success, sleep.\n");
