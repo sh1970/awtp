@@ -133,6 +133,7 @@ int main (int argc, char **argv)
 	       	} else {         
 			memset((void *)recvbuff, 0, sizeof(recvbuff));
 			ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
+			printf("recv ret= %d.", ret);
 			if ( ret >= 0 ) {
 				save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 				sleep(discovery_interval);
