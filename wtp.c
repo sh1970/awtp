@@ -184,7 +184,6 @@ int main (int argc, char **argv)
 	int flen = sizeof(addrfrom);
 
 	while(1) {  
-
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
 		//printf("send ret= %d.\n", ret);
 		//fflush(stdout);
