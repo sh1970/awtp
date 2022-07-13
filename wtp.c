@@ -92,9 +92,14 @@ int main (int argc, char **argv)
 	int ret = 0;
 	int retry = 0;
 
+#if 0
+	/*
+	 * daemon may cause openwrt spawan fail
+	 */
 	if ( debug_flag == 0 ) {
 		daemon(0, 0);
 	}
+#endif
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd == -1) {
