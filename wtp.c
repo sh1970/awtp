@@ -115,17 +115,24 @@ int main (int argc, char **argv)
 		return -2;
 	}
 
+	struct sockaddr_in addrlocal;
+	bzero(&addrlocal, sizeof(struct sockaddr_in));
+	addrlocal.sin_family = AF_INET;  
+	addrlocal.sin_addr.s_addr = INADDR_ANY;
+	addrlocal.sin_port = htons(0);  
+	int llen = sizeof(addrlocal); 
+
+	if ( bind(sockfd, (struct sockaddr *)&addrlocal, llen) < 0 ) {
+		printf("can't bind socket.");
+		return -3;
+	}
+
 	struct sockaddr_in addrto;
 	bzero(&addrto, sizeof(struct sockaddr_in));
 	addrto.sin_family = AF_INET;  
 	addrto.sin_addr.s_addr = inet_addr("255.255.255.255");
 	addrto.sin_port = htons(5246);  
 	int nlen = sizeof(addrto); 
-
-	if ( bind(sockfd,(struct sockaddr *)&addrto, nlen) < 0 ) {
-		printf("can't bind socket.");
-		return -3;
-	}
 
 	struct sockaddr_in addrfrom;
 	bzero(&addrfrom, sizeof(struct sockaddr_in));
