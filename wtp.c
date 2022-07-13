@@ -122,6 +122,7 @@ int main (int argc, char **argv)
 	int nlen = sizeof(addrto); 
 
 	struct sockaddr_in addrfrom;
+	bzero(&addrfrom, sizeof(struct sockaddr_in));
 	int flen = sizeof(addrfrom);
 
 	while(1) {  
