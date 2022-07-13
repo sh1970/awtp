@@ -141,11 +141,11 @@ int main (int argc, char **argv)
 	while(1) {  
 
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
-		printf("send ret= %d.\n", ret);
-		fflush(stdout);
+		//printf("send ret= %d.\n", ret);
+		//fflush(stdout);
 		if ( ret < 0 ) {  
-			printf("send fail, sleep.\n");
-			fflush(stdout);
+			//printf("send fail, sleep.\n");
+			//fflush(stdout);
 			sleep(DISCOVERY_INTERVAL_FAIL);
 			continue;
 	       	} else {         
@@ -153,19 +153,19 @@ int main (int argc, char **argv)
 			retry = 0;
 			memset((void *)recvbuff, 0, sizeof(recvbuff));
 			while(1) {
-				sleep(1);
+				//sleep(1);
 				ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
-				printf("recv ret= %d. errorno = %d, error=%s\n", ret, errno, strerror(errno));
-				fflush(stdout);
+				//printf("recv ret= %d. errorno = %d, error=%s\n", ret, errno, strerror(errno));
+				//fflush(stdout);
 				if ( ret == -1 ) {
-					printf("recv fail, sleep.\n");
-					fflush(stdout);
+					//printf("recv fail, sleep.\n");
+					//fflush(stdout);
 					if ( retry > 3 ) break;
 					retry++;
 					continue;
 				}else if ( ret >=0 ) {
-					printf("recv success, sleep.\n");
-					fflush(stdout);
+					//printf("recv success, sleep.\n");
+					//fflush(stdout);
 					save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 					sleep(DISCOVERY_INTERVAL);
 					break;
