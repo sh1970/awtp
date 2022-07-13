@@ -127,7 +127,9 @@ int main (int argc, char **argv)
 	while(1) {  
 
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
+		printf("send ret= %d.", ret);
 		if ( ret < 0 ) {  
+			printf("send fail, sleep.");
 			sleep(DISCOVERY_INTERVAL_FAIL);
 			continue;
 	       	} else {         
@@ -135,9 +137,11 @@ int main (int argc, char **argv)
 			ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
 			printf("recv ret= %d.", ret);
 			if ( ret >= 0 ) {
+				printf("recv success, sleep.");
 				save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 				sleep(discovery_interval);
 			}else {
+				printf("recv fail, sleep.");
 				sleep(DISCOVERY_INTERVAL_FAIL);
 				continue;
 			}
