@@ -90,6 +90,7 @@ int main (int argc, char **argv)
 	char recvbuff[512];
 	struct timeval tv;
 	int ret = 0;
+	int retry = 0;
 
 	if ( debug_flag == 0 ) {
 		daemon(0, 0);
@@ -107,7 +108,7 @@ int main (int argc, char **argv)
 		return -2;
 	}
 
-	tv.tv_sec = 10;
+	tv.tv_sec = 3;
 	tv.tv_usec = 0;
 	if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
 		printf("can't set socket timeout.");
@@ -136,20 +137,28 @@ int main (int argc, char **argv)
 			sleep(DISCOVERY_INTERVAL_FAIL);
 			continue;
 	       	} else {         
+
+			retry = 0;
 			memset((void *)recvbuff, 0, sizeof(recvbuff));
-			ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
-			printf("recv ret= %d. errorno = %d, error=%s\n", ret, errno, strerror(errno));
-			fflush(stdout);
-			if ( ret >= 0 ) {
-				printf("recv success, sleep.\n");
+			while(1) {
+				sleep(1);
+				ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
+				printf("recv ret= %d. errorno = %d, error=%s\n", ret, errno, strerror(errno));
 				fflush(stdout);
-				save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
-				sleep(discovery_interval);
-			}else {
-				printf("recv fail, sleep.\n");
-				fflush(stdout);
-				sleep(DISCOVERY_INTERVAL_FAIL);
-				continue;
+				if ( ret == -1 ) {
+					printf("recv fail, sleep.\n");
+					fflush(stdout);
+					if ( retry > 3 ) break;
+					retry++;
+					continue;
+				}else if ( ret >=0 ) {
+					printf("recv success, sleep.\n");
+					fflush(stdout);
+					save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
+					sleep(DISCOVERY_INTERVAL);
+					break;
+				}
+
 			}
 		}  
 	} 
