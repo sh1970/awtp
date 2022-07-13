@@ -122,6 +122,11 @@ int main (int argc, char **argv)
 	addrto.sin_port = htons(5246);  
 	int nlen = sizeof(addrto); 
 
+	if ( bind(sockfd,(struct sockaddr *)&addrto, nlen) < 0 ) {
+		printf("can't bind socket.");
+		return -3;
+	}
+
 	struct sockaddr_in addrfrom;
 	bzero(&addrfrom, sizeof(struct sockaddr_in));
 	int flen = sizeof(addrfrom);
