@@ -127,21 +127,26 @@ int main (int argc, char **argv)
 	while(1) {  
 
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
-		printf("send ret= %d.", ret);
+		printf("send ret= %d.\n", ret);
+		fflush(stdout);
 		if ( ret < 0 ) {  
-			printf("send fail, sleep.");
+			printf("send fail, sleep.\n");
+			fflush(stdout);
 			sleep(DISCOVERY_INTERVAL_FAIL);
 			continue;
 	       	} else {         
 			memset((void *)recvbuff, 0, sizeof(recvbuff));
 			ret = recvfrom(sockfd, recvbuff, sizeof(recvbuff), 0, (struct sockaddr *)&addrfrom, &flen);
-			printf("recv ret= %d.", ret);
+			printf("recv ret= %d.\n", ret);
+			fflush(stdout);
 			if ( ret >= 0 ) {
-				printf("recv success, sleep.");
+				printf("recv success, sleep.\n");
+				fflush(stdout);
 				save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 				sleep(discovery_interval);
 			}else {
-				printf("recv fail, sleep.");
+				printf("recv fail, sleep.\n");
+				fflush(stdout);
 				sleep(DISCOVERY_INTERVAL_FAIL);
 				continue;
 			}
