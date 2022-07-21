@@ -83,8 +83,7 @@ void save_ac_ip_to_ucentral(char *ip)
 	/* not same */
 	if ( 0 != strcmp(ip, ac_ip) ) {
 		memset((void *)ac_command, 0, sizeof(ac_command));
-		//sprintf(ac_command, "sed -i \"/option server/c\ \toption server '%s'\" /etc/config-shadow/ucentral", ip);
-		sprintf(ac_command, "sed -i \"/option server/c\\toption server '%s'\" /etc/config-shadow/ucentral", ip);
+		sprintf(ac_command, "sed -i \"/option server/c\ \toption server '%s'\" /etc/config-shadow/ucentral", ip);
 		system(ac_command);
 
 		/* save ip */
