@@ -185,6 +185,9 @@ int main (int argc, char **argv)
 	bzero(&addrfrom, sizeof(struct sockaddr_in));
 	int flen = sizeof(addrfrom);
 
+	/* sleep it */
+	sleep(DISCOVERY_INTERVAL);
+
 	while(1) {  
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
 		//printf("send ret= %d.\n", ret);
