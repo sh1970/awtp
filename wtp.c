@@ -95,8 +95,11 @@ void save_ac_ip_to_ucentral(char *ip)
 		}
 
 		/* reboot it */
-		system("reload_config");
+		/*
 		system("/etc/init.d/ucentral restart");   
+		*/
+		system("reload_config");
+		system("/sbin/reboot");
 	}
 	return;
 }
