@@ -99,6 +99,7 @@ void save_ac_ip_to_ucentral(char *ip)
 		system("/etc/init.d/ucentral restart");   
 		*/
 		system("reload_config");
+		sleep(DISCOVERY_INTERVAL_FAIL);
 		system("/sbin/reboot");
 	}
 	return;
@@ -187,9 +188,6 @@ int main (int argc, char **argv)
 	struct sockaddr_in addrfrom;
 	bzero(&addrfrom, sizeof(struct sockaddr_in));
 	int flen = sizeof(addrfrom);
-
-	/* sleep it */
-	sleep(DISCOVERY_INTERVAL);
 
 	while(1) {  
 		ret = sendto(sockfd, capwap_discovery, sizeof(capwap_discovery), 0, (struct sockaddr *)&addrto, nlen);
