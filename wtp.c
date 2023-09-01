@@ -99,8 +99,8 @@ void save_ac_ip_to_ucentral(char *ip)
 		system("/etc/init.d/ucentral restart");   
 		*/
 		system("reload_config");
-		//sleep(DISCOVERY_INTERVAL_FAIL);
 		sleep(DISCOVERY_INTERVAL);
+		system("/usr/bin/killall -9 flock");
 		system("/sbin/reboot");
 	}
 	return;
