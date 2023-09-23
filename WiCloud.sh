@@ -29,10 +29,10 @@ if [ -f "$acResult" ]; then
 		if [ "$acIP"X != "$server"X ]; then
                 	/bin/sed -i "/option server/c\ \toption server '$acIP'" /etc/config-shadow/ucentral
                 	/bin/sed -i "/option port/c\ \toption port '$acPort'" /etc/config-shadow/ucentral
-                	reload_config
+                	#reload_config
                 	sleep 60
 			echo "{\"Name\":\"WiAC\",\"Redirector\":\"$acIP:$acPort\"}" > /etc/ucentral/redirector.cloud.json
-			/usr/bin/killall -9 flock           
+			/usr/bin/killall -9 flock
 			sleep 3                
 			/sbin/reboot
 		fi
