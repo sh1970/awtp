@@ -322,6 +322,7 @@ int main (int argc, char **argv)
 					//printf("recv success, sleep.\n");
 					//fflush(stdout);
 					save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
+					system("/bin/rm -f /etc/ucentral/redirector.cloud.json");
 					sleep(DISCOVERY_INTERVAL);
 					break;
 				}
