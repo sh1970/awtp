@@ -8,7 +8,11 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
+#define UCENTRAL_CONFIG_PATH 		"/etc/ucentral"
 #define UCENTRAL_REDIRECTOR_IP		"/etc/ucentral/redirector.ip"
 #define UCENTRAL_REDIRECTOR		"/etc/ucentral/redirector.json"
 #define UCENTRAL_FORMAT			"{\"Name\":\"%s\",\"Redirector\":\"%s:%d\"}"
@@ -16,11 +20,14 @@
 #define DISCOVERY_INTERVAL		60
 #define DISCOVERY_INTERVAL_FAIL		5
 #define DISCOVERY_ONLY			1
+#define MAX_FILES_TO_KEEP 		5
+#define MAX_CLEANS	 		10
 
 int discovery_only = DISCOVERY_ONLY;
 int discovery_interval = DISCOVERY_INTERVAL;
 int ucentral_port = UCENTRAL_DEFAULT_PORT;
 int debug_flag = 0;
+int cleans = 0;
 char ac_ip[16];
 char ac_command[1024];
 
@@ -62,6 +69,99 @@ static int parse_args(int argc, char *argv[])
 	return 0;
 }
 
+int clean_ucentral_config(char *path)
+{
+    const char *dir_path = path;
+    struct dirent **files;
+    int file_count = 0;
+
+    // Open the directory
+    DIR *dir = opendir(dir_path);
+    if (!dir) {
+        perror("opendir");
+        return 1;
+    }
+
+    // Count files in the directory
+    struct dirent *entry;
+    while ((entry = readdir(dir))) {
+		if (strcmp(entry->d_name, "ucentral.cfg.0000000001") == 0)
+			continue;
+        if (strncmp(entry->d_name, "ucentral.cfg.", 13) == 0) {
+            file_count++;
+        }
+    }
+
+    // Check if there are more files than the maximum allowed
+    if (file_count <= MAX_FILES_TO_KEEP) {
+        // No need to remove any files
+        closedir(dir);
+        return 0;
+    }
+
+    // Allocate memory for file list
+    files = (struct dirent **)malloc(file_count * sizeof(struct dirent *));
+    if (!files) {
+        perror("malloc");
+        closedir(dir);
+        return 1;
+    }
+
+    // Rewind the directory and populate the file list
+    rewinddir(dir);
+    int i = 0;
+    while ((entry = readdir(dir))) {
+		if (strcmp(entry->d_name, "ucentral.cfg.0000000001") == 0)
+			continue;
+        if (strncmp(entry->d_name, "ucentral.cfg.", 13) == 0) {
+            files[i] = entry;
+            i++;
+        }
+    }
+
+    // Get modification times for each file
+    struct stat file_stat;
+    for (i = 0; i < file_count; i++) {
+        char file_path[PATH_MAX];
+        snprintf(file_path, PATH_MAX, "%s/%s", dir_path, files[i]->d_name);
+        if (stat(file_path, &file_stat) == 0) {
+            files[i]->d_ino = file_stat.st_mtime;
+        } else {
+            perror("stat");
+        }
+    }
+
+    // Manual sorting (bubble sort) based on modification time (newest first)
+    for (int i = 0; i < file_count - 1; i++) {
+        for (int j = 0; j < file_count - i - 1; j++) {
+            if (files[j]->d_ino < files[j + 1]->d_ino) {
+                struct dirent *temp = files[j];
+                files[j] = files[j + 1];
+                files[j + 1] = temp;
+            }
+        }
+    }
+
+    // Delete excess files beyond the maximum allowed
+    for (i = MAX_FILES_TO_KEEP; i < file_count; i++) {
+        char file_to_remove[PATH_MAX];
+        snprintf(file_to_remove, PATH_MAX, "%s/%s", dir_path, files[i]->d_name);
+        if (remove(file_to_remove) != 0) {
+            perror("remove");
+            free(files);
+            closedir(dir);
+            return 1;
+        }
+        //printf("Removed: %s\n", files[i]->d_name);
+    }
+
+    // Clean up and close the directory
+    free(files);
+    closedir(dir);
+
+    return 0;
+}
+
 /*
  * 
  *  get ac ip from discovery response
@@ -84,6 +184,8 @@ void save_ac_ip_to_ucentral(char *ip)
 	if ( 0 != strcmp(ip, ac_ip) ) {
 		memset((void *)ac_command, 0, sizeof(ac_command));
 		sprintf(ac_command, "sed -i \"/option server/c\ \toption server '%s'\" /etc/config-shadow/ucentral", ip);
+		system(ac_command);
+		sprintf(ac_command, "sed -i \"/option port/c\ \toption port '%d'\" /etc/config-shadow/ucentral", ucentral_port);
 		system(ac_command);
 
 		/* save ip */
@@ -213,6 +315,7 @@ int main (int argc, char **argv)
 					//fflush(stdout);
 					if ( retry > 3 ) break;
 					retry++;
+					sleep(DISCOVERY_ONLY);
 					continue;
 				}else if ( ret >=0 ) {
 					//printf("recv success, sleep.\n");
@@ -223,7 +326,18 @@ int main (int argc, char **argv)
 				}
 
 			}
-		}  
+		}
+
+		/* discovery timeout, get AC from WiCloud. */
+		if ( retry > 3 ) {
+			system("/usr/bin/WiCloud.sh");
+		}
+
+		cleans++;
+		if ( cleans >= MAX_CLEANS ) {
+			/* clean config path */
+			clean_ucentral_config(UCENTRAL_CONFIG_PATH);
+		}
 	} 
 
 	return(0);
