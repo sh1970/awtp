@@ -32,6 +32,8 @@ if [ -f "$acResult" ]; then
                 	#reload_config
                 	sleep 60
 			echo "{\"Name\":\"WiAC\",\"Redirector\":\"$acIP:$acPort\"}" > /etc/ucentral/redirector.cloud.json
+			echo "{\"Name\":\"WiAC\",\"Redirector\":\"$acIP:$acPort\"}" > /etc/ucentral/redirector.json
+			echo "$acIP" > /etc/ucentral/redirector.ip
 			/usr/bin/killall -9 flock
 			sleep 3                
 			/sbin/reboot
