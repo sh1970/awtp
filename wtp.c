@@ -332,10 +332,12 @@ int main (int argc, char **argv)
 			}
 		}
 
+#if 0
 		/* discovery timeout, get AC from WiCloud. */
 		if ( retry > 3 ) {
 			system("/usr/bin/WiCloud.sh");
 		}
+#endif
 
 		cleans++;
 		if ( cleans >= MAX_CLEANS ) {

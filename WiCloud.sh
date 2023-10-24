@@ -26,7 +26,7 @@ if [ -f "$acResult" ]; then
                 tmpPort=${cloudAC#*\"acPort\":\"}
                 acPort=${tmpPort%%\"\},\"*}                                                          
 
-		if [ "$acIP"X != "$server"X ]; then
+		if [ "$acIP"X != "$server"X ] || [ "$acPort"X != "$port"X ]; then
                 	/bin/sed -i "/option server/c\ \toption server '$acIP'" /etc/config-shadow/ucentral
                 	/bin/sed -i "/option port/c\ \toption port '$acPort'" /etc/config-shadow/ucentral
                 	#reload_config
