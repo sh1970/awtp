@@ -240,6 +240,7 @@ int main (int argc, char **argv)
 	struct timeval tv;
 	int ret = 0;
 	int retry = 0;
+	int succ = 0;
 
 #if 0
 	/*
@@ -319,13 +320,15 @@ int main (int argc, char **argv)
 					if ( retry > 3 ) break;
 					retry++;
 					sleep(DISCOVERY_ONLY);
+					succ = 0;
 					continue;
 				}else if ( ret >=0 ) {
 					//printf("recv success, sleep.\n");
 					//fflush(stdout);
 					save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 					system("/bin/rm -f /etc/ucentral/redirector.cloud.json");
-					sleep(DISCOVERY_INTERVAL);
+					sleep(DISCOVERY_INTERVAL+succ*3);
+					if ( succ <= 600 ) succ++;
 					break;
 				}
 
