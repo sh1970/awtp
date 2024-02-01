@@ -241,6 +241,7 @@ int main (int argc, char **argv)
 	int ret = 0;
 	int retry = 0;
 	int succ = 0;
+	pid_t pid = getppid();
 
 #if 0
 	/*
@@ -327,7 +328,7 @@ int main (int argc, char **argv)
 					//fflush(stdout);
 					save_ac_ip_to_ucentral(inet_ntoa(addrfrom.sin_addr));
 					system("/bin/rm -f /etc/ucentral/redirector.cloud.json");
-					sleep(DISCOVERY_INTERVAL+succ*3);
+					sleep(DISCOVERY_INTERVAL+succ*3+pid%10);
 					if ( succ <= 600 ) succ++;
 					break;
 				}
