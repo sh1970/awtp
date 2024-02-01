@@ -18,8 +18,8 @@
 #define UCENTRAL_FORMAT			"{\"Name\":\"%s\",\"Redirector\":\"%s:%d\"}"
 #define UCENTRAL_DEFAULT_PORT		15002
 #define DISCOVERY_INTERVAL		60
-#define DISCOVERY_INTERVAL_FAIL		5
-#define DISCOVERY_ONLY			1
+#define DISCOVERY_INTERVAL_FAIL		60
+#define DISCOVERY_ONLY			60
 #define MAX_FILES_TO_KEEP 		5
 #define MAX_CLEANS	 		10
 #define PATH_MAX			256
