@@ -7,7 +7,6 @@ ALL=awtp
 all: awtp
 
 #$(OBJDIR)/%.o:%.c
-CC = gcc
 
 .c.o:
 #	@echo "  $(CC) $(CFLAGS) "$<
