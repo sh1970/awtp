@@ -22,7 +22,6 @@
 #define DISCOVERY_ONLY			60
 #define MAX_FILES_TO_KEEP 		5
 #define MAX_CLEANS	 		10
-#define PATH_MAX			256
 
 int discovery_only = DISCOVERY_ONLY;
 int discovery_interval = DISCOVERY_INTERVAL;
