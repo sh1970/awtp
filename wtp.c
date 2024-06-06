@@ -22,6 +22,7 @@
 #define DISCOVERY_ONLY			60
 #define MAX_FILES_TO_KEEP 		5
 #define MAX_CLEANS	 		10
+#define PATH_MAX			256
 
 int discovery_only = DISCOVERY_ONLY;
 int discovery_interval = DISCOVERY_INTERVAL;
@@ -183,9 +184,9 @@ void save_ac_ip_to_ucentral(char *ip)
 	/* not same */
 	if ( 0 != strcmp(ip, ac_ip) ) {
 		memset((void *)ac_command, 0, sizeof(ac_command));
-		sprintf(ac_command, "sed -i \"/option server/c\\ \toption server '%s'\" /etc/config-shadow/ucentral", ip);
+		sprintf(ac_command, "sed -i \"/option server/c\ \toption server '%s'\" /etc/config-shadow/ucentral", ip);
 		system(ac_command);
-		sprintf(ac_command, "sed -i \"/option port/c\\ \toption port '%d'\" /etc/config-shadow/ucentral", ucentral_port);
+		sprintf(ac_command, "sed -i \"/option port/c\ \toption port '%d'\" /etc/config-shadow/ucentral", ucentral_port);
 		system(ac_command);
 
 		/* save ip */
