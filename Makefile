@@ -18,8 +18,12 @@ CC = gcc
 #	gcc $(INCL_DIRS) -c $(CFLAGS) $< -o $@
 
 awtp: $(OBJS)
+        for dir in $(SUBDIRS); do \
+          $(MAKE) -C $$dir all; \
+        done
+
 #	echo "  $(CC) $(LDFLAGS) $(LIBS) $(EXENAME)"
-	$(CC) $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
+#	$(CC) $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
 #	echo "  mipsel-openwrt-linux-musl-gcc $(LDFLAGS) $(LIBS) $(EXENAME)"
 #	mipsel-openwrt-linux-musl-gcc $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
 #	arm-openwrt-linux-muslgnueabi-gcc $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
