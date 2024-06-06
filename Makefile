@@ -18,9 +18,9 @@ CC = gcc
 #	gcc $(INCL_DIRS) -c $(CFLAGS) $< -o $@
 
 awtp: $(OBJS)
-        for dir in $(SUBDIRS); do \
-          $(MAKE) -C $$dir all; \
-        done
+	for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir all; \
+	done
 
 #	echo "  $(CC) $(LDFLAGS) $(LIBS) $(EXENAME)"
 #	$(CC) $(LDFLAGS) -o $(EXENAME) $(OBJS) $(LIBS) $(STATICLIBS)
